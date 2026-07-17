@@ -1,29 +1,29 @@
 const express = require('express');
 const cors = require('cors');
-const { instagramdl } = require("instagram-dl");
+const { instagramdl } = require('instagram-dl');
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
-app.get('/api/download', async (req, res) => {
-    const videoUrl = req.query.url;
-    if (!videoUrl) return res.status(400).json({ error: 'URL is required' });
+app.get('/', (req, res) => {
+    res.send('ReelJet Backend is running smoothly!');
+});
+
+// Instagram download route
+app.get('/download', async (req, res) => {
+    const url = req.query.url;
+    if (!url) return res.status(400).send('URL is required');
 
     try {
-        const result = await instagramdl(videoUrl);
-        if (result && result.length > 0) {
-            res.json({
-                url: result[0].download_link,
-                type: 'video'
-            });
-        } else {
-            res.status(404).json({ error: 'No media found' });
-        }
+        const data = await instagramdl(url);
+        res.json(data);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).send('Error fetching video: ' + error.message);
     }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

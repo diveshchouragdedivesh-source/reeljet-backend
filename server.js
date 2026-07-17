@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const instagramGetUrl = require('instagram-url-direct');
-
+const instagramGetUrl = require('instagram-url-direct').default;
 const app = express();
 app.use(cors());
 app.use(express.json());

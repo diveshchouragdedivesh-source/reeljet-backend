@@ -1,10 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const InstagramDL = require('instagram-dl');
+const { igdl } = require('instagram-url-direct');
 
 const app = express();
 
-// CORS ko poora open kar diya hai taaki koi blocking na ho
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST'],
@@ -16,7 +15,7 @@ app.get('/api/download', async (req, res) => {
     if (!videoUrl) return res.status(400).json({ error: 'URL is required' });
 
     try {
-        const result = await InstagramDL(videoUrl);
+        const result = await igdl(videoUrl);
         if (result && result.length > 0) {
             res.json({
                 url: result[0].download_link,

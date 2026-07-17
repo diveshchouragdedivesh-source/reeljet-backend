@@ -6,9 +6,8 @@
     "start": "node server.js"
   },
   "dependencies": {
-        "cors": "^2.8.5",
-            "express": "^4.19.2",
-                "instagram-dl": "^1.0.1"
-                  }
-                  
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "instagram-dl": "latest"
   }
+}

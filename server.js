@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { instagram } = require('nexo-aio-downloader');
+const ig = require('instagram-url-direct');
 
 const app = express();
 app.use(cors());
@@ -18,17 +18,16 @@ app.get('/api/download', async (req, res) => {
   }
 
   try {
-    console.log(`⏳ Fetching: ${videoUrl}`);
-    const result = await instagram(videoUrl);
+    console.log('⏳ Fetching:', videoUrl);
+    const result = await ig.instagram(videoUrl);
 
-    if (!result || result.length === 0) {
+    if (!result || !result.url) {
       throw new Error('No media found. Make sure the link is public.');
     }
 
-    const media = result[0];
     res.json({
-      url: media.url,
-      thumbnail: media.thumbnail || null,
+      url: result.url,
+      thumbnail: result.thumbnail || null,
       quality: 'HD'
     });
 
@@ -40,8 +39,7 @@ app.get('/api/download', async (req, res) => {
   }
 });
 
-// 🔥 SABSE IMPORTANT: LISTEN KO BAHAR RAKHO (ROUTE KE ANDAR NAHI)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log('🚀 Server running on port', PORT);
 });

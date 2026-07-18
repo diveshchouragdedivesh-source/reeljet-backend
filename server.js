@@ -1,6 +1,15 @@
+// SABSE PEHLE YE LINE AAYEGI - AGAR YE NA DIKHE TOH NODE HI NAHI CHAL RAHA
+console.log("🚀 SERVER FILE CHAL GAYI");
+
 const express = require('express');
+console.log("✅ Express loaded");
+
 const cors = require('cors');
+console.log("✅ Cors loaded");
+
+// INSTAGRAM PACKAGE LOAD KARO (AGAR YE FAIL HOGA TOH ERROR DIKHEGA)
 const ig = require('instagram-url-direct');
+console.log("✅ Instagram package loaded");
 
 const app = express();
 app.use(cors());
@@ -41,5 +50,5 @@ app.get('/api/download', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log('🚀 Server running on port', PORT);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

@@ -3,15 +3,15 @@ const cors = require('cors');
 const { instagram } = require('nexo-aio-downloader');
 
 const app = express();
-app.use(cors()); // CORS enable (teri website chalegi)
+app.use(cors());
 app.use(express.json());
 
-// HEALTH CHECK (optional, par accha lagta hai)
+// Health check (jaan hai toh ye chalega)
 app.get('/', (req, res) => {
   res.send('✅ ReelJet Backend is Running!');
 });
 
-// 🚀 YAHI TERA MAIN DOWNLOAD ENDPOINT HAI
+// 🔥 YAHI TUMHARA DOWNLOAD ENDPOINT HAI
 app.get('/api/download', async (req, res) => {
   const videoUrl = req.query.url;
 
@@ -22,8 +22,8 @@ app.get('/api/download', async (req, res) => {
 
   try {
     console.log(`⏳ Fetching: ${videoUrl}`);
-
-    // 🔥 MAGIC LINE - Ye package Instagram se direct video laayega
+    
+    // 🔥 MAGIC LINE - Direct Instagram se video laayega
     const result = await instagram(videoUrl);
 
     // Agar result khali aaya toh
@@ -31,12 +31,12 @@ app.get('/api/download', async (req, res) => {
       throw new Error('No media found. Make sure the link is public.');
     }
 
-    // Pehla media item lo (usually video ya image)
+    // Pehla media item lo (video ya image)
     const media = result[0];
     const downloadUrl = media.url;
     const thumbnail = media.thumbnail || null;
 
-    // 🌟 FORMAT JO TERI WEBSITE SAMJHTI HAI (same as before)
+    // Format jo teri website samajhti hai
     res.json({
       url: downloadUrl,
       thumbnail: thumbnail,
@@ -45,9 +45,8 @@ app.get('/api/download', async (req, res) => {
 
   } catch (error) {
     console.error('❌ Error:', error.message);
-    // Agar koi error aaye toh 500 bhejo
-    res.status(500).json({ 
-      error: error.message || 'Failed to fetch media. Please check the URL.' 
+    res.status(500).json({
+      error: error.message || 'Failed to fetch media. Please check the URL.'
     });
   }
 });

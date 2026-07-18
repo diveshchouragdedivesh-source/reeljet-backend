@@ -2,12 +2,12 @@
   "name": "reeljet-backend",
   "version": "1.0.0",
   "main": "server.js",
-  "dependencies": {
-    "express": "^4.17.1",
-    "cors": "^2.8.5",
-    "xfarr-api": "^1.0.0"
-  },
   "scripts": {
     "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "nexo-aio-downloader": "^1.1.6"
   }
 }

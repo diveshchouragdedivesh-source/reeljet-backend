@@ -31,6 +31,7 @@ app.get('/api/download', async (req, res) => {
       thumbnail: media.thumbnail || null,
       quality: 'HD'
     });
+
   } catch (error) {
     console.error('❌ Error:', error.message);
     res.status(500).json({
@@ -39,7 +40,7 @@ app.get('/api/download', async (req, res) => {
   }
 });
 
-// PORT = 8081 (8080 se conflict nahi)
+// 🔥 IMPORTANT: LISTEN KO BAHAR RAKHO (ROUTE KE ANDAR NAHI)
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

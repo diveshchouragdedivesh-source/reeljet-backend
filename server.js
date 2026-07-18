@@ -40,7 +40,8 @@ app.get('/api/download', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 8081;
+// 🔥 PORT 3000 use kar rahe hain (Railway isko expose karta hai)
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });

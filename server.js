@@ -1,13 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const ig = require('instagram-url-direct');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('✅ ReelJet Backend is Running!');
+  res.send('✅ ReelJet Proxy is LIVE!');
 });
 
 app.get('/api/download', async (req, res) => {
@@ -18,28 +17,33 @@ app.get('/api/download', async (req, res) => {
   }
 
   try {
-    console.log('⏳ Fetching:', videoUrl);
-    const result = await ig.instagram(videoUrl);
+    // 🔥 YEH WORKING PROXY API HAI
+    const targetUrl = `https://socialdownloader.space/api/meta/download?url=${encodeURIComponent(videoUrl)}`;
+    console.log('⏳ Proxying to:', targetUrl);
 
-    if (!result || !result.url) {
-      throw new Error('No media found. Make sure the link is public.');
+    const response = await fetch(targetUrl);
+    const data = await response.json();
+
+    if (data && data.url) {
+      res.json({
+        url: data.url,
+        thumbnail: data.thumbnail || data.picture || null,
+        quality: 'HD'
+      });
+    } else {
+      throw new Error('No media found from proxy.');
     }
 
-    res.json({
-      url: result.url,
-      thumbnail: result.thumbnail || null,
-      quality: 'HD'
-    });
-
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('❌ Proxy Error:', error.message);
     res.status(500).json({
       error: error.message || 'Failed to fetch media. Please check the URL.'
     });
   }
 });
 
-const PORT = 3002;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+// 🔥 PORT 0 = Railway automatically allocate karega free port
+const PORT = process.env.PORT || 0;
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Proxy running on port ${server.address().port}`);
 });

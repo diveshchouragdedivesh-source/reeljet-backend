@@ -1,6 +1,13 @@
+console.log("🚀 1. Node chal raha hai");
+
 const express = require('express');
+console.log("🚀 2. Express load ho gaya");
+
 const cors = require('cors');
+console.log("🚀 3. Cors load ho gaya");
+
 const ig = require('instagram-url-direct');
+console.log("🚀 4. Instagram package load ho gaya");
 
 const app = express();
 app.use(cors());
@@ -39,7 +46,7 @@ app.get('/api/download', async (req, res) => {
   }
 });
 
-// 🔥 IMPORTANT: Yahan 3001 HARDCODE kiya hai (process.env nahi)
+// 🔥 PORT HARDCODE 3001 - Railway variable se koi matlab nahi
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

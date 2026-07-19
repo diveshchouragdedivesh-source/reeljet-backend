@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const ig = require('instagram-url-direct');
-const axios = require('axios');
 
 const app = express();
 app.use(cors());
@@ -19,47 +18,28 @@ app.get('/api/download', async (req, res) => {
   }
 
   try {
-    // Pehle instagram-url-direct try karo
-    console.log('⏳ Trying instagram-url-direct...');
+    console.log('⏳ Fetching:', videoUrl);
     const result = await ig.instagram(videoUrl);
-    
-    if (result && result.url) {
-      return res.json({
-        url: result.url,
-        thumbnail: result.thumbnail || null,
-        quality: 'HD'
-      });
-    }
-  } catch (error) {
-    console.log('❌ instagram-url-direct failed:', error.message);
-  }
 
-  // Agar upar fail ho, toh fallback API use karo
-  try {
-    console.log('⏳ Trying fallback API...');
-    const response = await axios.get('https://api.obtaindown.com/obApi/api/analysis', {
-      params: { url: videoUrl },
-      headers: { 'Content-Type': 'application/json' }
+    if (!result || !result.url) {
+      throw new Error('No media found. Make sure the link is public.');
+    }
+
+    res.json({
+      url: result.url,
+      thumbnail: result.thumbnail || null,
+      quality: 'HD'
     });
 
-    if (response.data && response.data.url) {
-      return res.json({
-        url: response.data.url,
-        thumbnail: response.data.thumbnail || null,
-        quality: 'HD'
-      });
-    }
   } catch (error) {
-    console.log('❌ Fallback API also failed:', error.message);
+    console.error('❌ Error:', error.message);
+    res.status(500).json({
+      error: error.message || 'Failed to fetch media. Please check the URL.'
+    });
   }
-
-  // Dono fail ho gaye
-  res.status(500).json({
-    error: 'Failed to fetch media. Please check the URL or try again later.'
-  });
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = 3002;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });

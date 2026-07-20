@@ -1,12 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+const ig = require('instagram-url-direct');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('✅ ReelJet SnapSave Proxy is Running!');
+  res.send('✅ ReelJet Backend is Running!');
 });
 
 app.get('/api/download', async (req, res) => {
@@ -17,25 +18,36 @@ app.get('/api/download', async (req, res) => {
   }
 
   try {
-    // 🔥 Backend se SnapSave API call (CORS issue nahi aayega)
-    const targetUrl = `https://snapsave.app/api/ajaxSearch?q=${encodeURIComponent(videoUrl)}&lang=en&type=reel`;
-    console.log('⏳ Proxying to SnapSave:', targetUrl);
+    console.log('⏳ Fetching:', videoUrl);
+    const result = await ig.instagram(videoUrl);
 
-    const response = await fetch(targetUrl);
-    const data = await response.json();
+    // Handle both array and object responses
+    let mediaUrl = null;
+    let thumbnail = null;
 
-    if (data && data.links && data.links.length > 0) {
+    if (Array.isArray(result) && result.length > 0) {
+      mediaUrl = result[0].url;
+      thumbnail = result[0].thumbnail || null;
+    } else if (result && result.url) {
+      mediaUrl = result.url;
+      thumbnail = result.thumbnail || null;
+    } else if (result && result.media && result.media.length > 0) {
+      mediaUrl = result.media[0].url;
+      thumbnail = result.media[0].thumbnail || null;
+    }
+
+    if (mediaUrl) {
       res.json({
-        url: data.links[0].download,
-        thumbnail: data.thumbnail || null,
-        quality: data.links[0].quality || 'HD'
+        url: mediaUrl,
+        thumbnail: thumbnail,
+        quality: 'HD'
       });
     } else {
-      throw new Error('No media found from SnapSave.');
+      throw new Error('No media found. Make sure the link is public.');
     }
 
   } catch (error) {
-    console.error('❌ Proxy Error:', error.message);
+    console.error('❌ Error:', error.message);
     res.status(500).json({
       error: error.message || 'Failed to fetch media. Please check the URL.'
     });
@@ -44,5 +56,5 @@ app.get('/api/download', async (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`🚀 Proxy server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
